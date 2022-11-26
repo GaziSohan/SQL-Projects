@@ -1,0 +1,80 @@
+-- Manufacturer list and respective code: //confidential//
+-- This query takes in a manufacturer and returns the coverage of symbols, footprints, and 3D models for all parts in our official database
+-- Limitations: if a part isn't yet in our official database, it won't return any information for that part. It is also possible that we have obsolete or invalid part numbers in our database. The manufacturer is encouraged to share feedback.
+
+-- Requirements of the report:
+-- TO DO: Decouple these two reports so they're "automic"
+-- TO DO: we need to know is it staff upload (Yes/No) --> check is_staff parameter
+-- TO DO: add the username of the adder  AND the wording stored in the database "Created with <username>"
+-- TO DO: if it's a staff upload, don't show any other results except the most recent one. If it's a non-staff upload, show the most recent one only. 
+-- TO DO: we need to add the format of the upload (Eagle, Altium, etc.). If Eagle, put "Native", if non-Eagle, put "Non-Native"
+
+
+--------------------------------------------------------
+
+SELECT
+
+"Manufacturer",
+"Part_Model",
+"Date-added",
+"Format",
+"Username",
+"Staff_Upload",
+"Has_Symbol",
+"Has_Footprint",
+"Has_3D",
+"Native/Non-Native"
+
+
+FROM
+
+(SELECT
+    DISTINCT spicemodels_unipart.manufacturer AS "Manufacturer",
+    spicemodels_unipart.part AS "Part_Model",
+    spicemodels_part.added AS "Date-added",
+    spicemodels_part.format AS "Format",
+    auth_user.username AS "Username",
+    CASE WHEN auth_user.is_staff = 'true' THEN 'Yes' ELSE 'No' END AS "Staff_Upload",
+    CASE WHEN has_symbol = 1 THEN 'Yes' ELSE 'No' END AS "Has_Symbol",
+    CASE WHEN has_footprint = 1 THEN 'Yes' ELSE 'No' END AS "Has_Footprint",
+    CASE WHEN has_3d = 1 THEN 'Yes' ELSE 'No' END AS "Has_3D",
+    CASE WHEN spicemodels_part.format = 'Eagle' THEN 'Native' ELSE 'Non-Native' END AS "Native/Non-Native"
+FROM
+    spicemodels_unipart
+LEFT JOIN spicemodels_part ON spicemodels_part.modelname = spicemodels_unipart.part
+LEFT JOIN auth_user ON auth_user.id = spicemodels_part.adder_id
+WHERE spicemodels_unipart.manufacturer ilike any(array[{{manuf}}])
+) AS "t1"
+
+INNER JOIN
+
+(SELECT
+    spicemodels_unipart.part AS "Part",
+    MAX(spicemodels_part.added) AS "Date-add"
+FROM
+    spicemodels_unipart
+LEFT JOIN spicemodels_part ON spicemodels_part.modelname = spicemodels_unipart.part
+WHERE spicemodels_unipart.manufacturer ilike any(array[{{manuf}}])
+GROUP BY Part) AS "t2"
+
+ON t2."Date-add" = t1."Date-added"
+
+
+----------------------------------------------
+
+SELECT
+    DISTINCT spicemodels_unipart.manufacturer AS "Manufacturer",
+    spicemodels_unipart.part AS "Part_Model",
+    spicemodels_part.added AS "Date-added",
+    spicemodels_part.format AS "Format",
+    auth_user.username AS "Username",
+    CASE WHEN auth_user.is_staff = 'true' THEN 'Yes' ELSE 'No' END AS "Staff_Upload",
+    CASE WHEN has_symbol = 1 THEN 'Yes' ELSE 'No' END AS "Has_Symbol",
+    CASE WHEN has_footprint = 1 THEN 'Yes' ELSE 'No' END AS "Has_Footprint",
+    CASE WHEN has_3d = 1 THEN 'Yes' ELSE 'No' END AS "Has_3D",
+    CASE WHEN spicemodels_part.format = 'Eagle' THEN 'Native' ELSE 'Non-Native' END AS "Native/Non-Native"
+FROM
+    spicemodels_unipart
+LEFT JOIN spicemodels_part ON spicemodels_part.modelname = spicemodels_unipart.part
+LEFT JOIN auth_user ON auth_user.id = spicemodels_part.adder_id
+WHERE spicemodels_unipart.manufacturer ilike any(array[{{manuf}}])
