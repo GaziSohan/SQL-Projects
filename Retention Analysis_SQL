@@ -1,0 +1,52 @@
+WITH 
+
+date_range AS 
+(
+  SELECT 
+  CAST('2020-12-01' AS DATE) AS start_date, 
+  CAST('2020-12-31' AS DATE) AS end_date
+),
+
+start_accounts AS
+(
+  SELECT DISTINCT user_pseudo_id
+  FROM `turing_data_analytics.subscriptions` AS subscrp
+  INNER JOIN date_range AS dtrng 
+  ON subscrp.subscription_start <= dtrng.start_date
+  AND (subscrp.subscription_end > dtrng.start_date OR subscrp.subscription_end is null)
+),
+
+end_accounts AS
+(
+  SELECT DISTINCT user_pseudo_id
+  FROM `turing_data_analytics.subscriptions` AS subscrp
+  INNER JOIN date_range AS dtrng 
+  ON subscrp.subscription_start <= dtrng.end_date
+  AND (subscrp.subscription_end > dtrng.end_date OR subscrp.subscription_end is null)
+),
+
+retained_accounts AS
+(
+  SELECT strt_acc.user_pseudo_id
+  FROM start_accounts AS strt_acc
+  INNER JOIN end_accounts AS end_acc
+  ON strt_acc.user_pseudo_id = end_acc.user_pseudo_id
+),
+
+start_accounts_count AS
+(
+  SELECT COUNT(*) AS starting_customers
+  FROM start_accounts
+),
+
+retained_accounts_count AS
+(
+  SELECT COUNT(*) AS retained_customers
+  FROM retained_accounts
+)
+
+SELECT
+  (retained_accounts_count.retained_customers/
+  start_accounts_count.starting_customers) 
+  AS retention_rate_Dec_2020
+FROM retained_accounts_count,start_accounts_count
