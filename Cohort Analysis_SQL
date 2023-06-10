@@ -1,0 +1,97 @@
+SELECT 
+week_start,COUNT(user_pseudo_id) user_acquisition,COUNT(user_pseudo_id) WEEK_0,
+COUNT(CASE WHEN week_start<'2021-Jan-31'THEN user_pseudo_id ELSE NULL END) - COUNT(
+CASE WHEN week_start='2020-Nov-01' AND subscription_end BETWEEN '2020-11-01' AND '2020-11-01'+6 THEN user_pseudo_id 
+WHEN week_start='2020-Nov-08' AND subscription_end BETWEEN '2020-11-08' AND '2020-11-08'+6 THEN user_pseudo_id
+WHEN week_start='2020-Nov-15' AND subscription_end BETWEEN '2020-11-15' AND '2020-11-15'+6 THEN user_pseudo_id
+WHEN week_start='2020-Nov-22' AND subscription_end BETWEEN '2020-11-22' AND '2020-11-22'+6 THEN user_pseudo_id
+WHEN week_start='2020-Nov-29' AND subscription_end BETWEEN '2020-11-29' AND '2020-11-29'+6 THEN user_pseudo_id
+WHEN week_start='2020-Dec-06' AND subscription_end BETWEEN '2020-12-06' AND '2020-12-06'+6 THEN user_pseudo_id
+WHEN week_start='2020-Dec-13' AND subscription_end BETWEEN '2020-12-13' AND '2020-12-13'+6 THEN user_pseudo_id
+WHEN week_start='2020-Dec-20' AND subscription_end BETWEEN '2020-12-20' AND '2020-12-20'+6 THEN user_pseudo_id
+WHEN week_start='2020-Dec-27' AND subscription_end BETWEEN '2020-12-27' AND '2020-12-27'+6 THEN user_pseudo_id
+WHEN week_start='2021-Jan-03' AND subscription_end BETWEEN '2021-01-03' AND '2021-01-03'+6 THEN user_pseudo_id
+WHEN week_start='2021-Jan-10' AND subscription_end BETWEEN '2021-01-10' AND '2021-01-10'+6 THEN user_pseudo_id
+WHEN week_start='2021-Jan-17' AND subscription_end BETWEEN '2021-01-17' AND '2021-01-17'+6 THEN user_pseudo_id
+WHEN week_start='2021-Jan-24' AND subscription_end BETWEEN '2021-01-24' AND '2021-01-24'+6 THEN user_pseudo_id ELSE NULL
+END) WEEK_1,
+COUNT(CASE WHEN week_start<'2021-Jan-24'THEN user_pseudo_id ELSE NULL END) - COUNT(
+CASE WHEN week_start='2020-Nov-01' AND subscription_end BETWEEN '2020-11-01' AND '2020-11-01'+13 THEN user_pseudo_id 
+WHEN week_start='2020-Nov-08' AND subscription_end BETWEEN '2020-11-08' AND '2020-11-08'+13 THEN user_pseudo_id
+WHEN week_start='2020-Nov-15' AND subscription_end BETWEEN '2020-11-15' AND '2020-11-15'+13 THEN user_pseudo_id
+WHEN week_start='2020-Nov-22' AND subscription_end BETWEEN '2020-11-22' AND '2020-11-22'+13 THEN user_pseudo_id
+WHEN week_start='2020-Nov-29' AND subscription_end BETWEEN '2020-11-29' AND '2020-11-29'+13 THEN user_pseudo_id
+WHEN week_start='2020-Dec-06' AND subscription_end BETWEEN '2020-12-06' AND '2020-12-06'+13 THEN user_pseudo_id
+WHEN week_start='2020-Dec-13' AND subscription_end BETWEEN '2020-12-13' AND '2020-12-13'+13 THEN user_pseudo_id
+WHEN week_start='2020-Dec-20' AND subscription_end BETWEEN '2020-12-20' AND '2020-12-20'+13 THEN user_pseudo_id
+WHEN week_start='2020-Dec-27' AND subscription_end BETWEEN '2020-12-27' AND '2020-12-27'+13 THEN user_pseudo_id
+WHEN week_start='2021-Jan-03' AND subscription_end BETWEEN '2021-01-03' AND '2021-01-03'+13 THEN user_pseudo_id
+WHEN week_start='2021-Jan-10' AND subscription_end BETWEEN '2021-01-10' AND '2021-01-10'+13 THEN user_pseudo_id
+WHEN week_start='2021-Jan-17' AND subscription_end BETWEEN '2021-01-17' AND '2021-01-17'+13 THEN user_pseudo_id ELSE NULL
+END) WEEK_2,
+COUNT(CASE WHEN week_start<'2021-Jan-17'THEN user_pseudo_id ELSE NULL END) - COUNT(
+CASE WHEN week_start='2020-Nov-01' AND subscription_end BETWEEN '2020-11-01' AND '2020-11-01'+20 THEN user_pseudo_id 
+WHEN week_start='2020-Nov-08' AND subscription_end BETWEEN '2020-11-08' AND '2020-11-08'+20 THEN user_pseudo_id
+WHEN week_start='2020-Nov-15' AND subscription_end BETWEEN '2020-11-15' AND '2020-11-15'+20 THEN user_pseudo_id
+WHEN week_start='2020-Nov-22' AND subscription_end BETWEEN '2020-11-22' AND '2020-11-22'+20 THEN user_pseudo_id
+WHEN week_start='2020-Nov-29' AND subscription_end BETWEEN '2020-11-29' AND '2020-11-29'+20 THEN user_pseudo_id
+WHEN week_start='2020-Dec-06' AND subscription_end BETWEEN '2020-12-06' AND '2020-12-06'+20 THEN user_pseudo_id
+WHEN week_start='2020-Dec-13' AND subscription_end BETWEEN '2020-12-13' AND '2020-12-13'+20 THEN user_pseudo_id
+WHEN week_start='2020-Dec-20' AND subscription_end BETWEEN '2020-12-20' AND '2020-12-20'+20 THEN user_pseudo_id
+WHEN week_start='2020-Dec-27' AND subscription_end BETWEEN '2020-12-27' AND '2020-12-27'+20 THEN user_pseudo_id
+WHEN week_start='2021-Jan-03' AND subscription_end BETWEEN '2021-01-03' AND '2021-01-03'+20 THEN user_pseudo_id
+WHEN week_start='2021-Jan-10' AND subscription_end BETWEEN '2021-01-10' AND '2021-01-10'+20 THEN user_pseudo_id ELSE NULL
+END) WEEK_3,
+COUNT(CASE WHEN week_start<'2021-Jan-10'THEN user_pseudo_id ELSE NULL END) - COUNT(
+CASE WHEN week_start='2020-Nov-01' AND subscription_end BETWEEN '2020-11-01' AND '2020-11-01'+27 THEN user_pseudo_id 
+WHEN week_start='2020-Nov-08' AND subscription_end BETWEEN '2020-11-08' AND '2020-11-08'+27 THEN user_pseudo_id
+WHEN week_start='2020-Nov-15' AND subscription_end BETWEEN '2020-11-15' AND '2020-11-15'+27 THEN user_pseudo_id
+WHEN week_start='2020-Nov-22' AND subscription_end BETWEEN '2020-11-22' AND '2020-11-22'+27 THEN user_pseudo_id
+WHEN week_start='2020-Nov-29' AND subscription_end BETWEEN '2020-11-29' AND '2020-11-29'+27 THEN user_pseudo_id
+WHEN week_start='2020-Dec-06' AND subscription_end BETWEEN '2020-12-06' AND '2020-12-06'+27 THEN user_pseudo_id
+WHEN week_start='2020-Dec-13' AND subscription_end BETWEEN '2020-12-13' AND '2020-12-13'+27 THEN user_pseudo_id
+WHEN week_start='2020-Dec-20' AND subscription_end BETWEEN '2020-12-20' AND '2020-12-20'+27 THEN user_pseudo_id
+WHEN week_start='2020-Dec-27' AND subscription_end BETWEEN '2020-12-27' AND '2020-12-27'+27 THEN user_pseudo_id
+WHEN week_start='2021-Jan-03' AND subscription_end BETWEEN '2021-01-03' AND '2021-01-03'+27 THEN user_pseudo_id ELSE NULL
+END) WEEK_4,
+COUNT(CASE WHEN week_start<'2021-Jan-03'THEN user_pseudo_id ELSE NULL END) - COUNT(
+CASE WHEN week_start='2020-Nov-01' AND subscription_end BETWEEN '2020-11-01' AND '2020-11-01'+34 THEN user_pseudo_id 
+WHEN week_start='2020-Nov-08' AND subscription_end BETWEEN '2020-11-08' AND '2020-11-08'+34 THEN user_pseudo_id
+WHEN week_start='2020-Nov-15' AND subscription_end BETWEEN '2020-11-15' AND '2020-11-15'+34 THEN user_pseudo_id
+WHEN week_start='2020-Nov-22' AND subscription_end BETWEEN '2020-11-22' AND '2020-11-22'+34 THEN user_pseudo_id
+WHEN week_start='2020-Nov-29' AND subscription_end BETWEEN '2020-11-29' AND '2020-11-29'+34 THEN user_pseudo_id
+WHEN week_start='2020-Dec-06' AND subscription_end BETWEEN '2020-12-06' AND '2020-12-06'+34 THEN user_pseudo_id
+WHEN week_start='2020-Dec-13' AND subscription_end BETWEEN '2020-12-13' AND '2020-12-13'+34 THEN user_pseudo_id
+WHEN week_start='2020-Dec-20' AND subscription_end BETWEEN '2020-12-20' AND '2020-12-20'+34 THEN user_pseudo_id
+WHEN week_start='2020-Dec-27' AND subscription_end BETWEEN '2020-12-27' AND '2020-12-27'+34 THEN user_pseudo_id ELSE NULL
+END) WEEK_5,
+COUNT(CASE WHEN week_start<>'2020-Dec-27' AND week_start < '2021-Jan-03' THEN user_pseudo_id ELSE NULL END) - COUNT(
+CASE WHEN week_start='2020-Nov-01' AND subscription_end BETWEEN '2020-11-01' AND '2020-11-01'+41 THEN user_pseudo_id 
+WHEN week_start='2020-Nov-08' AND subscription_end BETWEEN '2020-11-08' AND '2020-11-08'+41 THEN user_pseudo_id
+WHEN week_start='2020-Nov-15' AND subscription_end BETWEEN '2020-11-15' AND '2020-11-15'+41 THEN user_pseudo_id
+WHEN week_start='2020-Nov-22' AND subscription_end BETWEEN '2020-11-22' AND '2020-11-22'+41 THEN user_pseudo_id
+WHEN week_start='2020-Nov-29' AND subscription_end BETWEEN '2020-11-29' AND '2020-11-29'+41 THEN user_pseudo_id
+WHEN week_start='2020-Dec-06' AND subscription_end BETWEEN '2020-12-06' AND '2020-12-06'+41 THEN user_pseudo_id
+WHEN week_start='2020-Dec-13' AND subscription_end BETWEEN '2020-12-13' AND '2020-12-13'+41 THEN user_pseudo_id
+WHEN week_start='2020-Dec-20' AND subscription_end BETWEEN '2020-12-20' AND '2020-12-20'+41 THEN user_pseudo_id ELSE NULL
+END) WEEK_6,
+from
+(SELECT 
+CASE WHEN subscription_start between '2020-11-01' AND '2020-11-01'+6 THEN '2020-Nov-01'
+WHEN subscription_start between '2020-11-08' AND '2020-11-08'+6 THEN '2020-Nov-08'
+WHEN subscription_start between '2020-11-15' AND '2020-11-15'+6 THEN '2020-Nov-15'
+WHEN subscription_start between '2020-11-22' AND '2020-11-22'+6 THEN '2020-Nov-22'
+WHEN subscription_start between '2020-11-29' AND '2020-11-29'+6 THEN '2020-Nov-29'
+WHEN subscription_start between '2020-12-06' AND '2020-12-06'+6 THEN '2020-Dec-06'
+WHEN subscription_start between '2020-12-13' AND '2020-12-13'+6 THEN '2020-Dec-13'
+WHEN subscription_start between '2020-12-20' AND '2020-12-20'+6 THEN '2020-Dec-20'
+WHEN subscription_start between '2020-12-27' AND '2020-12-27'+6 THEN '2020-Dec-27'
+WHEN subscription_start between '2021-01-03' AND '2021-01-03'+6 THEN '2021-Jan-03'
+WHEN subscription_start between '2021-01-10' AND '2021-01-10'+6 THEN '2021-Jan-10'
+WHEN subscription_start between '2021-01-17' AND '2021-01-17'+6 THEN '2021-Jan-17'
+WHEN subscription_start between '2021-01-24' AND '2021-01-24'+6 THEN '2021-Jan-24'
+WHEN subscription_start = '2021-01-31' THEN '2021-Jan-31' ELSE NULL END Week_Start,
+user_pseudo_id,subscription_end
+FROM `turing_data_analytics.subscriptions`
+) X
+Group By 1
