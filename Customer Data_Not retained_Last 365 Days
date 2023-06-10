@@ -1,0 +1,87 @@
+WITH top_customers AS 
+(SELECT 
+  cust.CustomerID AS Cust_ID, 
+  cont.Firstname, 
+  cont.LastName, 
+  CONCAT(cont.Firstname,' ',cont.LastName) AS FullName,
+  IFNULL(cont.Title, CONCAT('Dear', ' ', cont.LastName)) AS addressing_title,
+  cont.EmailAddress, 
+  cont.Phone, 
+  cust.AccountNumber, 
+  cust.CustomerType,
+  addr.City,
+  stat_prov.Name AS State,
+  countr_reg.Name AS Country,
+  CONCAT(addr.AddressLine1, ', ', addr.AddressLine2) AS Address,
+  COUNT(sale_ord_head.SalesOrderID) AS Number_Orders,
+  ROUND(SUM(sale_ord_head.SubTotal + sale_ord_head.TaxAmt),2) AS Total_Amt_Purch,
+  DATE(last_sales_table.orderdate) AS Last_Order_Date_Cust
+
+FROM `adwentureworks_db.customer` cust
+INNER JOIN `adwentureworks_db.individual` ind ON ind.CustomerID = cust.CustomerID
+--We are using INNER JOIN in case of joining "Individual" table because it will take only the CustomerType = 'I' from Customer table.
+INNER JOIN `adwentureworks_db.contact` cont ON cont.ContactID = ind.ContactID
+INNER JOIN `adwentureworks_db.customeraddress` cust_addr ON cust_addr.CustomerID = cust.CustomerID
+INNER JOIN `adwentureworks_db.address` addr ON addr.AddressID = cust_addr.AddressID
+INNER JOIN `adwentureworks_db.stateprovince` stat_prov ON stat_prov.StateProvinceID = addr.StateProvinceID
+INNER JOIN `adwentureworks_db.countryregion` countr_reg ON countr_reg.CountryRegionCode = stat_prov.CountryRegionCode 
+INNER JOIN `adwentureworks_db.salesorderheader` sale_ord_head ON sale_ord_head.CustomerID = cust.CustomerID
+
+INNER JOIN
+--joining a temp table with an existing table
+(
+	SELECT 
+    sales.customerid,
+    ARRAY_AGG(sales.orderdate order by orderdate desc limit 1) [offset(0)] AS orderdate
+	FROM `adwentureworks_db.salesorderheader` sales
+	GROUP BY sales.customerid
+) last_sales_table on cust.customerid = last_sales_table.customerid
+--Creating a temp table with 2 columns from a pre-existing table
+
+GROUP BY 
+  cust.CustomerID,
+  cont.Firstname,
+  cont.LastName,
+  cont.Title,
+  cont.Emailaddress,
+  cont.Phone,
+  cust.AccountNumber,
+  cust.CustomerType,
+  addr.City,
+  stat_prov.Name,
+  countr_reg.Name,
+  addr.AddressLine1,
+  addr.AddressLine2,
+  last_sales_table.orderdate
+  ORDER BY Total_Amt_Purch DESC)
+--LIMIT 200)
+
+SELECT 
+  top_customers.*,
+  (SELECT DATE(OrderDate)
+      FROM `adwentureworks_db.salesorderheader`
+      ORDER BY OrderDate DESC
+      LIMIT 1) AS Latest_Order_Date,
+  DATE_DIFF(
+    (SELECT DATE(OrderDate)
+      FROM `adwentureworks_db.salesorderheader`
+      ORDER BY OrderDate DESC
+      LIMIT 1),top_customers.Last_Order_Date_Cust,DAY) AS Diff
+  --showing 2 extra columns; technically not necessary
+
+FROM top_customers
+INNER JOIN `adwentureworks_db.salesorderheader` AS sales
+ON top_customers.Cust_ID = sales.CustomerID
+WHERE 
+    DATE_DIFF(
+    (SELECT DATE(OrderDate)
+      FROM `adwentureworks_db.salesorderheader`
+      ORDER BY OrderDate DESC
+      LIMIT 1),top_customers.Last_Order_Date_Cust,DAY) >= 365
+ORDER BY top_customers.Total_Amt_Purch DESC
+LIMIT 200
+
+
+Note: 1.2 Business finds the original query valuable to analyze customers and now want to get the data from the 
+first query for the top 200 customers with the highest total amount of purchases who have not ordered for the last 365 days. 
+How would you identify this segment?
