@@ -1,0 +1,59 @@
+with new_table as
+
+(select 
+date_trunc(subscription_start,week) as week0,
+subscription_start as sub_start,
+user_pseudo_id as id,
+subscription_end as sub_end
+from `turing_data_analytics.subscriptions`),
+
+final_table as
+(select 
+new_table.week0 as week_start,
+count(distinct new_table.id) as week0,
+count(distinct(case 
+  when new_table.sub_end is null then new_table.id
+  when new_table.sub_end >= (new_table.week0) and new_table.sub_end <= (new_table.week0+13) then null
+  else new_table.id
+end)) as week1,
+count(distinct(case 
+  when new_table.sub_end is null then new_table.id
+  when new_table.sub_end >= (new_table.week0) and new_table.sub_end <= (new_table.week0+20) then null
+  else new_table.id
+end)) as week2,
+count(distinct(case 
+  when new_table.sub_end is null then new_table.id
+  when new_table.sub_end >= (new_table.week0) and new_table.sub_end <= (new_table.week0+27) then null
+  else new_table.id
+end)) as week3,
+count(distinct(case 
+  when new_table.sub_end is null then new_table.id
+  when new_table.sub_end >= (new_table.week0) and new_table.sub_end <= (new_table.week0+34) then null
+  else new_table.id
+end)) as week4,
+count(distinct(case 
+  when new_table.sub_end is null then new_table.id
+  when new_table.sub_end >= (new_table.week0) and new_table.sub_end <= (new_table.week0+41) then null
+  else new_table.id
+end)) as week5,
+count(distinct(case 
+  when new_table.sub_end is null then new_table.id
+  when new_table.sub_end >= (new_table.week0) and new_table.sub_end <= (new_table.week0+48) then null
+  else new_table.id
+end)) as week6
+from new_table
+group by week_start
+order by week_start)
+
+--select * from final_table
+
+select
+week_start,
+week0 as Week_0,
+(case when final_table.week1 = final_table.week0 then null else final_table.week1 end) as Week_1,
+(case when final_table.week2 = final_table.week1 then null else final_table.week2 end) as Week_2,
+(case when final_table.week3 = final_table.week2 then null else final_table.week3 end) as Week_3,
+(case when final_table.week4 = final_table.week3 then null else final_table.week4 end) as Week_4,
+(case when final_table.week5 = final_table.week4 then null else final_table.week5 end) as Week_5,
+(case when final_table.week6 = final_table.week5 then null else final_table.week6 end) as Week_6
+from final_table
