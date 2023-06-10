@@ -1,0 +1,38 @@
+SELECT 
+  LAST_DAY(DATE (sales.OrderDate), MONTH) AS order_month,
+  count_reg.CountryRegionCode,
+  sale_ter.Name AS Region,
+  COUNT(sales.SalesOrderID) AS number_orders,
+  COUNT(sales.SalesPersonID) AS no_salesPersons,
+  SUM(sales.SubTotal + sales.TaxAmt) AS Total_w_tax
+  --use total due column
+  --count_distinct
+  --missing number of customers
+
+FROM `adwentureworks_db.salesorderheader` sales
+
+INNER JOIN `adwentureworks_db.customer` cust ON cust.CustomerID = sales.CustomerID
+INNER JOIN `adwentureworks_db.customeraddress` cust_addr ON cust_addr.CustomerID = cust.CustomerID
+INNER JOIN `adwentureworks_db.address` addr ON addr.AddressID = cust_addr.AddressID
+INNER JOIN `adwentureworks_db.stateprovince` st_prov ON st_prov.StateProvinceID = addr.StateProvinceID
+INNER JOIN `adwentureworks_db.countryregion` count_reg ON count_reg.CountryRegionCode = st_prov.CountryRegionCode
+INNER JOIN `adwentureworks_db.salesterritory` sale_ter ON sale_ter.TerritoryID = cust.TerritoryID
+
+GROUP BY 
+  LAST_DAY(DATE (sales.OrderDate), MONTH),
+  count_reg.countryregioncode,
+  sale_ter.name
+
+
+
+
+--order_month
+--number_orders
+--country
+--region
+--number_customers
+--number_sales_persons
+--total_w_tax
+
+--2.1 Create a query of monthly sales numbers in each Country & region. Include in the query a number of orders, customers and sales persons 
+in each month with a total amount with tax earned. Sales numbers from all types of customers are required
