@@ -1,0 +1,61 @@
+SELECT 
+  cust.CustomerID, 
+  cont.Firstname, 
+  cont.LastName, 
+  CONCAT(cont.Firstname,' ',cont.LastName) AS FullName,
+  IFNULL(cont.Title, CONCAT('Dear', ' ', cont.LastName)) AS addressing_title,
+  cont.EmailAddress, 
+  cont.Phone, 
+  cust.AccountNumber, 
+  cust.CustomerType,
+  addr.City,
+  stat_prov.Name AS State,
+  countr_reg.Name AS Country,
+  CONCAT(addr.AddressLine1, ', ', addr.AddressLine2) AS Address,
+  --show separate columns Line1 & Line2
+  COUNT(sale_ord_head.SalesOrderID) AS Number_Orders,
+  ROUND(SUM(sale_ord_head.SubTotal + sale_ord_head.TaxAmt),2) AS Total_Amt_Purch,
+  --no need to round check formatting function
+  -- better use total due when checking sum
+  last_sales_table.orderdate AS Last_Order_Date
+
+FROM `adwentureworks_db.customer` cust
+INNER JOIN `adwentureworks_db.individual` ind ON ind.CustomerID = cust.CustomerID
+--We are using INNER JOIN in case of joining "Individual" table because it will take only the CustomerType = 'I' from Customer table.
+INNER JOIN `adwentureworks_db.contact` cont ON cont.ContactID = ind.ContactID
+INNER JOIN `adwentureworks_db.customeraddress` cust_addr ON cust_addr.CustomerID = cust.CustomerID
+INNER JOIN `adwentureworks_db.address` addr ON addr.AddressID = cust_addr.AddressID
+INNER JOIN `adwentureworks_db.stateprovince` stat_prov ON stat_prov.StateProvinceID = addr.StateProvinceID
+INNER JOIN `adwentureworks_db.countryregion` countr_reg ON countr_reg.CountryRegionCode = stat_prov.CountryRegionCode 
+INNER JOIN `adwentureworks_db.salesorderheader` sale_ord_head ON sale_ord_head.CustomerID = cust.CustomerID
+
+INNER JOIN
+(
+	SELECT 
+    sales.customerid,
+    ARRAY_AGG(sales.orderdate order by orderdate desc limit 1) [offset(0)] AS orderdate
+	FROM `adwentureworks_db.salesorderheader` sales
+	GROUP BY sales.customerid
+) last_sales_table on cust.customerid = last_sales_table.customerid
+--Creating a temp table with 2 columns from a pre-existing table
+
+--use max_order_date instead of last_order_date
+--recalculate the total_amt_purchase
+
+GROUP BY 
+  cust.CustomerID,
+  cont.Firstname,
+  cont.LastName,
+  cont.Title,
+  cont.Emailaddress,
+  cont.Phone,
+  cust.AccountNumber,
+  cust.CustomerType,
+  addr.City,
+  stat_prov.Name,
+  countr_reg.Name,
+  addr.AddressLine1,
+  addr.AddressLine2,
+  last_sales_table.orderdate
+  ORDER BY Total_Amt_Purch
+  LIMIT 200
