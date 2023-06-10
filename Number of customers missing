@@ -1,0 +1,29 @@
+WITH cumul_tax AS (
+SELECT 
+  LAST_DAY(DATE (sales.OrderDate), MONTH) AS order_month,
+  count_reg.CountryRegionCode,
+  sale_ter.Name AS Region,
+  COUNT(sales.SalesOrderID) AS number_orders,
+  COUNT(sales.SalesPersonID) AS no_salesPersons,
+  SUM(sales.SubTotal + sales.TaxAmt) AS Total_w_tax
+
+FROM `adwentureworks_db.salesorderheader` sales
+
+INNER JOIN `adwentureworks_db.customer` cust ON cust.CustomerID = sales.CustomerID
+INNER JOIN `adwentureworks_db.customeraddress` cust_addr ON cust_addr.CustomerID = cust.CustomerID
+INNER JOIN `adwentureworks_db.address` addr ON addr.AddressID = cust_addr.AddressID
+INNER JOIN `adwentureworks_db.stateprovince` st_prov ON st_prov.StateProvinceID = addr.StateProvinceID
+INNER JOIN `adwentureworks_db.countryregion` count_reg ON count_reg.CountryRegionCode = st_prov.CountryRegionCode
+INNER JOIN `adwentureworks_db.salesterritory` sale_ter ON sale_ter.TerritoryID = cust.TerritoryID
+
+GROUP BY 
+  LAST_DAY(DATE (sales.OrderDate), MONTH),
+  count_reg.countryregioncode,
+  sale_ter.name
+)
+
+SELECT *,
+SUM(cumul_tax.total_w_tax) OVER (PARTITION BY cumul_tax.region ORDER BY cumul_tax.order_month) AS cumulative_sum
+FROM cumul_tax
+
+--number of customers missing
